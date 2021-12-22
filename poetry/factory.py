@@ -177,6 +177,13 @@ class Factory(BaseFactory):
         name = source["name"]
         url = source["url"]
 
+        _http_basic = auth_config.get("http-basic")
+        if _http_basic is not None:
+            _username = _http_basic.get(name).get("username")
+            _password = _http_basic.get(name).get("password")
+            protocol, uri = url.split("//", 1)
+            url = f"{protocol}//{_username}:{_password}@{uri}"
+
         return LegacyRepository(
             name,
             url,
